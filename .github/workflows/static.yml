@@ -38,6 +38,8 @@ jobs:
         with:
           # Upload entire repository
           path: '.'
+      - name: installing
+        uses: make setup && make build
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2
