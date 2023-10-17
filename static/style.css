@@ -1,0 +1,85 @@
+html,
+body,
+.container {
+  height: 90%;
+}
+
+#institution_name {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+table.team-list {
+  font-family: Roboto, Helvetica, sans-serif;
+  text-align: center;
+}
+
+table.team-list th {
+  border-bottom: 1px solid rgb(173 173 173);
+}
+
+.td_team_name {
+  font-size: 16px;
+  font-weight: 700;
+  color: rgb(0, 73, 110);
+}
+
+.td_inst_name {
+  font-size: 12px;
+  font-weight: 400;
+  color: rgb(110, 110, 110);
+}
+
+.td_team_rank {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+div div.input-field.col label span {
+  padding-left: 25px;
+}
+
+.input-field .prefix.active {
+  color: #1976d2 !important;
+}
+
+input:not([type]):focus:not([readonly]),
+input[type="text"]:not(.browser-default):focus:not([readonly]) {
+  border-bottom: 1px solid #1976d2;
+}
+
+[type="checkbox"].filled-in:checked + span:not(.lever):after {
+  border-color: #1976d2 !important;
+  background-color: #1976d2 !important;
+}
+
+td.center.problem-status {
+  font-size: 13px;
+}
+
+table.dataTable thead th.center {
+  text-align: center !important;
+}
+
+select {
+  display: block;
+  height: 2em;
+}
+
+div.settings.card {
+  box-shadow: none;
+  border: none;
+  background-color: #fafafa;
+}
+
+table th.problem-th {
+  padding-right: 24px;
+  padding-left: 24px;
+  white-space: nowrap;
+}
+
+.chip {
+  margin-top: 15px;
+  margin-left: 10px;
+}

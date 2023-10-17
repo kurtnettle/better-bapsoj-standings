@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+    integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+    integrity="sha512-UJfAaOlIRtdR+0P6C3KUoTDAxVTuy3lnSXLyLKlHYJlcSU8Juge/mjeaxDNMlw9LgeIotgz5FP8eUQPhX1q10A=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+  <link href="https://cdn.datatables.net/v/zf/jq-3.7.0/dt-1.13.6/fh-3.4.0/sb-1.6.0/sp-2.2.0/datatables.min.css"
+    rel="stylesheet" />
+  <script
+    src="https://cdn.datatables.net/v/zf/jq-3.7.0/dt-1.13.6/fh-3.4.0/sb-1.6.0/sp-2.2.0/datatables.min.js"></script>
+
+  <link rel="stylesheet" href="/static/dist/style.min.css" />
+  <script src="/static/dist/bundle.min.js"></script>
+
+</head>
+
+<body>
+  <div class="navbar">
+    <nav>
+      <div class="nav-wrapper blue darken-2">
+        <a class="brand-logo center">Thanks BAPS for the wonderful contest</a>
+        <ul class="right hide-on-med-and-down">
+          <li>
+            <a href="#setting_modal" class="modal-trigger"><i class="material-icons">settings</i></a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+
+  <div id="setting_modal" class="modal">
+    <div class="modal-content">
+      <h4>Settings</h4>
+      <div class="divider"></div>
+      <div class="input-field">
+        <input disabled type="text" id="standings_api" class="autocomplete"
+          value="https://api.bapsoj.org/api/judge/standings?contest=3&page=1" />
+        <label for="standings_api">Standings API</label>
+      </div>
+      <div class="input-field">
+        <input disabled type="text" id="contest_api" class="autocomplete"
+          value="https://api.bapsoj.org/api/judge/contests/icpc-preliminary-dhaka-2023/" />
+        <label for="contest_api">Contest API</label>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-close waves-green btn-flat disabled">Save</a>
+    </div>
+  </div>
+
+  <div id="preload" class="container valign-wrapper">
+    <div class="row">
+      <h3 class="center-align">Hold on....</h3>
+      <div class="progress blue darken-3">
+        <div class="indeterminate blue darken-1"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="row first" style="visibility: hidden">
+      <div class="card">
+        <div class="card-content">
+          <span class="grey-text text-darken-4 left">
+            <b>Begin: </b>
+            <span id="contest-start-time">start-time</span>
+          </span>
+          <span class="grey-text text-darken-4 right">
+            <b>End: </b>
+            <span id="contest-end-time">end-time</span>
+          </span>
+          <span class="card-title grey-text text-darken-4 center-align" id="contest-title">contest-title</span>
+          <h6 class="grey-text text-darken-4 center-align" id="contest-duration">
+            contest-duration
+          </h6>
+
+          <span class="grey-text text-darken-4 right">
+            <b>last update: </b>
+            <span id="last-update-span"></span>
+          </span>
+          <br />
+          <span class="grey-text text-darken-4 right">
+            <i>(refreshes every 30 minutes)</i>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row second p1" style="visibility: hidden">
+      <div class="card col s12">
+        <div class="card-content">
+          <div class="col s4 input-field">
+            <i class="material-icons prefix">account_circle</i>
+            <input type="text" id="team_name" class="autocomplete" />
+            <label for="team_name">team name</label>
+          </div>
+
+          <div class="col s8">
+            <div class="input-field inline" style="width: inherit">
+              <i class="material-icons prefix">school</i>
+              <input type="text" id="institution_name" class="autocomplete"
+                oninput="this.value = this.value.toUpperCase()" />
+              <label for="institution_name">institution</label>
+            </div>
+            <label>
+              <input id="strict_ins_name" type="checkbox" class="filled-in blue-text" />
+              <span>strict</span>
+            </label>
+          </div>
+
+          <div class="input-field col s1">
+            <input type="number" id="min_solv" min="0" />
+            <label for="min_solv">min</label>
+          </div>
+
+          <div class="input-field col s1">
+            <input type="number" id="max_solv" min="0" />
+            <label for="max_solv">max</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row third" style="visibility: hidden">
+      <div class="wrapper card result">
+        <table class="team-list striped record_item" id="results">
+          <thead>
+            <tr>
+              <th width="4%" class="center">#</th>
+              <th>Team Name</th>
+              <th class="center">Solved</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", async function () {
+      results = await init();
+
+      const table_data = genTeamList(results);
+      const table = $("#results").DataTable({
+        dom: 'p<"chip"i>t',
+        paging: true,
+        data: table_data,
+        autoWidth: false,
+        pageLength: 100,
+        ordering: false,
+        orderClasses: false,
+        fixedHeader: true,
+        initComplete: function (settings, json) {
+          $("div.row.first").css("visibility", "visible");
+          $("div.row.second").css("visibility", "visible");
+          $("div.row.third").css("visibility", "visible");
+          $("#preload").css("display", "none");
+        },
+        language: {
+          paginate: {
+            next: '<i class="material-icons blue-text">chevron_right</i>',
+            previous: '<i class="material-icons blue-text">chevron_left</i>',
+          },
+        },
+      });
+
+      $.fn.dataTable.ext.search.push(filterTable);
+
+      $("#team_name, #institution_name, #strict_ins_name, #min_solv,#max_solv").on(
+        "keyup change",
+        function () {
+          table.draw();
+        }
+      );
+    });
+  </script>
+</body>
+
+</html>
