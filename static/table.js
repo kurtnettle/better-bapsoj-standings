@@ -29,7 +29,7 @@ function genTeamList(results) {
   return output
 }
 
-function filterTable(settings, searchData, index, rowData, counter) {
+function filterTeamRankTable(settings, searchData, index, rowData, counter) {
   const teamNameInput = document.getElementById('team_name').value
   const institutionName = document.getElementById('institution_name').value
   const isStrict = document.getElementById('strict_ins_name').checked
