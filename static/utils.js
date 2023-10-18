@@ -11,7 +11,7 @@ async function getStandings() {
     baseUrl.searchParams.set('page', json.next)
 
     if (json.next == null) break
-    await new Promise(r => setTimeout(r, 650))
+    await new Promise(r => setTimeout(r, 850))
   }
 
   const resultsMerged = []
