@@ -1,6 +1,4 @@
-function genTeamList(results) {
-  const table = document.querySelector('table.team-list')
-
+function genTeamList (results) {
   const output = []
   for (const result of results) {
     const data = []
@@ -29,7 +27,7 @@ function genTeamList(results) {
   return output
 }
 
-function filterTeamRankTable(settings, searchData, index, rowData, counter) {
+function filterTeamRankTable (settings, searchData, index, rowData, counter) {
   const teamNameInput = document.getElementById('team_name').value
   const institutionName = document.getElementById('institution_name').value
   const isStrict = document.getElementById('strict_ins_name').checked
@@ -39,12 +37,12 @@ function filterTeamRankTable(settings, searchData, index, rowData, counter) {
 
   rowData = $(rowData[1])
 
-  const tm_nm = rowData[0].innerText
-  const ins_nm = rowData[2].innerText
+  const tmNm = rowData[0].innerText
+  const insNm = rowData[2].innerText
 
   if (
-    tm_nm.indexOf(teamNameInput) > -1 &&
-    (isStrict ? ins_nm == institutionName : ins_nm.indexOf(institutionName) > -1) &&
+    tmNm.indexOf(teamNameInput) > -1 &&
+    (isStrict ? insNm === institutionName : insNm.indexOf(institutionName) > -1) &&
     totalSolved >= minSolve &&
     totalSolved <= maxSolve
   ) {
@@ -52,19 +50,19 @@ function filterTeamRankTable(settings, searchData, index, rowData, counter) {
   }
 }
 
-function filterUniRankTable(settings, searchData, index, rowData, counter) {
+function filterUniRankTable (settings, searchData, index, rowData, counter) {
   const institutionName = document.getElementById('institution_name_rank').value
   rowData = $(rowData[2])
-  const ins_nm = rowData[0].innerText
-  if (ins_nm.indexOf(institutionName) > -1) {
+  const insNm = rowData[0].innerText
+  if (insNm.indexOf(institutionName) > -1) {
     return true
   }
 }
 
-function filterTable(settings, searchData, index, rowData, counter) {
-  if (settings.nTable.id == 'ranking_tb') {
+function filterTable (settings, searchData, index, rowData, counter) {
+  if (settings.nTable.id === 'ranking_tb') {
     return filterTeamRankTable(settings, searchData, index, rowData, counter)
-  } else if (settings.nTable.id == 'uni_rank_tb') {
+  } else if (settings.nTable.id === 'uni_rank_tb') {
     return filterUniRankTable(settings, searchData, index, rowData, counter)
   }
 }

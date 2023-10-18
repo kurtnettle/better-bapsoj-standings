@@ -1,4 +1,4 @@
-async function getStandings() {
+async function getStandings () {
   const api = $('#standings_api').val()
   const baseUrl = new URL(api)
   const results = []
@@ -27,13 +27,13 @@ async function getStandings() {
   return resultsMerged
 }
 
-async function getContestMeta() {
+async function getContestMeta () {
   const api = $('#contest_api').val()
   const resp = await fetch(api, { method: 'GET' })
   return await resp.json()
 }
 
-function getDuration(starts, ends) {
+function getDuration (starts, ends) {
   const diff = parseInt(new Date(starts) - new Date(ends)) / 1000
 
   const hrs = parseInt(diff / 3600)
@@ -41,11 +41,11 @@ function getDuration(starts, ends) {
   return `${hrs.toString().padStart(2, 0)}:${min.toString().padStart(2, 0)}`
 }
 
-function getContestStatus(ends) {
+function getContestStatus (ends) {
   return parseInt(new Date(ends) - Date.now()) > 0 ? 'Running' : 'Ended'
 }
 
-function formatDtString(text) {
+function formatDtString (text) {
   const dt = new Date(text)
   return `${dt.getUTCDate()}-${dt.getUTCMonth() + 1}-${dt.getUTCFullYear()} ${dt
     .getHours()
@@ -59,7 +59,7 @@ function formatDtString(text) {
         .padStart(2, '0')}`
 }
 
-function setContestMeta(json) {
+function setContestMeta (json) {
   let elem = document.getElementById('contest-title')
   elem.textContent = json.title
 
@@ -75,17 +75,16 @@ function setContestMeta(json) {
   )}`
 }
 
-function setProblemSetMeta(problemSet) {
+function setProblemSetMeta (problemSet) {
   const table = document.querySelector('table.team-list')
   const thead = table.querySelector('thead tr')
-  let i = 0
+
   for (const problem of problemSet) {
     const html = `<span class='th-problem'>${problem.problem_order_character}</td>`
     const row = thead.appendChild(document.createElement('th'))
     row.classList.add('center')
     row.classList.add('problem-th')
     row.innerHTML = html
-    i += 1
   }
 
   $('#max_solv').attr('max', problemSet.length)
@@ -93,15 +92,15 @@ function setProblemSetMeta(problemSet) {
   M.updateTextFields()
 }
 
-function populate_team_name(results) {
-  const team_names = {}
+function populateTeamName (results) {
+  const teamNames = {}
   for (const result of results) {
-    team_names[result.fullname] = null
+    teamNames[result.fullname] = null
   }
-  return team_names
+  return teamNames
 }
 
-function populate_institution_name(results) {
+function populateInstitutionName (results) {
   const institutionNames = {}
   for (const result of results) {
     institutionNames[result.institution.toUpperCase()] = null
@@ -109,7 +108,7 @@ function populate_institution_name(results) {
   return institutionNames
 }
 
-function gen_uni_rank(data) {
+function genUniRank (data) {
   const output = {}
   let i = 0
   for (const result of data) {
@@ -118,17 +117,17 @@ function gen_uni_rank(data) {
     const data = {}
 
     i += 1
-    data['uni_rank'] = i
-    data['rank'] = result.rank
-    data['team_name'] = result.fullname
-    data['problem_total_points'] = result.problem_total_points
-    data['total_fine'] = result.total_fine
+    data.uni_rank = i
+    data.rank = result.rank
+    data.team_name = result.fullname
+    data.problem_total_points = result.problem_total_points
+    data.total_fine = result.total_fine
     output[result.institution] = data
   }
   return output
 }
 
-function gen_uni_rank_td(unis) {
+function genUniRankTd (unis) {
   const output = []
   for (const uni in unis) {
     const data = []
@@ -146,7 +145,7 @@ function gen_uni_rank_td(unis) {
   return output
 }
 
-async function init() {
+async function init () {
   M.Collapsible.init($('.collapsible'))
   M.Modal.init($('.modal'))
   M.Autocomplete.init($('.autocomplete'), {
@@ -159,7 +158,7 @@ async function init() {
 
   const min30 = 1800000
   if (!data || new Date() - new Date(data.lastUpdate) > min30) {
-    const api = "https://icpc-preliminary-dhaka-2023.kurtnettle.workers.dev/"
+    const api = 'https://icpc-preliminary-dhaka-2023.kurtnettle.workers.dev/'
     const resp = await fetch(api, { method: 'GET' })
     data = await resp.json()
     localStorage.setItem('secret_data', JSON.stringify(data))
@@ -171,15 +170,15 @@ async function init() {
     data.lastUpdate
   )
 
-  M.Autocomplete.getInstance($('#team_name')).updateData(populate_team_name(data.teamStats))
-  M.Autocomplete.getInstance($('#institution_name')).updateData(populate_institution_name(data.teamStats))
+  M.Autocomplete.getInstance($('#team_name')).updateData(populateTeamName(data.teamStats))
+  M.Autocomplete.getInstance($('#institution_name')).updateData(populateInstitutionName(data.teamStats))
 
-  const uni_rank_data = gen_uni_rank_td(gen_uni_rank(data.teamStats))
+  const uniRankData = genUniRankTd(genUniRank(data.teamStats))
 
-  const uni_rank_table = $('#uni_rank_tb').DataTable({
+  const uniRankTable = $('#uni_rank_tb').DataTable({
     dom: 'p<"chip"i>t',
     paging: true,
-    data: uni_rank_data,
+    data: uniRankData,
     autoWidth: false,
     pageLength: 70,
     ordering: false,
@@ -193,7 +192,7 @@ async function init() {
   })
 
   $('#institution_name_rank').on('keyup change', function () {
-    uni_rank_table.draw()
+    uniRankTable.draw()
   })
   return data.teamStats
 }
