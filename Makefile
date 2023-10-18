@@ -1,6 +1,5 @@
 .ONESHELL:
 run:
-	@source venv/pyenv/bin/activate;
 	@python -m http.server
 
 .ONESHELL:

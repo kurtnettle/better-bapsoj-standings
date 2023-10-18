@@ -2,4 +2,3 @@
 node_modules
 venv
 package*.json
-static/dist*
