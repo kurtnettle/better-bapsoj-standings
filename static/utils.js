@@ -50,10 +50,13 @@ function formatDtString(text) {
   return `${dt.getUTCDate()}-${dt.getUTCMonth() + 1}-${dt.getUTCFullYear()} ${dt
     .getHours()
     .toString()
-    .padStart(2, '0')}:${dt.getMinutes()}:${dt
-      .getSeconds()
+    .padStart(2, '0')}:${dt
+      .getMinutes()
       .toString()
-      .padStart(2, '0')}`
+      .padStart(2, '0')}:${dt
+        .getSeconds()
+        .toString()
+        .padStart(2, '0')}`
 }
 
 function setContestMeta(json) {
