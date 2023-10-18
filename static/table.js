@@ -51,3 +51,20 @@ function filterTable(settings, searchData, index, rowData, counter) {
     return true
   }
 }
+
+function filterUniRankTable(settings, searchData, index, rowData, counter) {
+  const institutionName = document.getElementById('institution_name_rank').value
+  rowData = $(rowData[2])
+  const ins_nm = rowData[0].innerText
+  if (ins_nm.indexOf(institutionName) > -1) {
+    return true
+  }
+}
+
+function filterTable(settings, searchData, index, rowData, counter) {
+  if (settings.nTable.id == 'ranking_tb') {
+    return filterTeamRankTable(settings, searchData, index, rowData, counter)
+  } else if (settings.nTable.id == 'uni_rank_tb') {
+    return filterUniRankTable(settings, searchData, index, rowData, counter)
+  }
+}

@@ -109,6 +109,43 @@ function populate_institution_name(results) {
   return institutionNames
 }
 
+function gen_uni_rank(data) {
+  const output = {}
+  let i = 0
+  for (const result of data) {
+    if (output[result.institution]) continue
+
+    const data = {}
+
+    i += 1
+    data['uni_rank'] = i
+    data['rank'] = result.rank
+    data['team_name'] = result.fullname
+    data['problem_total_points'] = result.problem_total_points
+    data['total_fine'] = result.total_fine
+    output[result.institution] = data
+  }
+  return output
+}
+
+function gen_uni_rank_td(unis) {
+  const output = []
+  for (const uni in unis) {
+    const data = []
+    data.push(`<div class="center td_team_rank">${unis[uni].uni_rank}</div>`)
+    data.push(`<div class="center td_team_rank">${unis[uni].rank}</div>`)
+    data.push(
+      `<span class="td_teamName">${uni.toUpperCase()}</span></br><span class="td_inst_name">${unis[uni].team_name
+      }</span>`
+    )
+    data.push(
+      `<div class="center">${unis[uni].problem_total_points}<br>(${unis[uni].total_fine})</div>`
+    )
+    output.push(data)
+  }
+  return output
+}
+
 async function init() {
   M.Collapsible.init($('.collapsible'))
   M.Modal.init($('.modal'))
@@ -137,5 +174,26 @@ async function init() {
   M.Autocomplete.getInstance($('#team_name')).updateData(populate_team_name(data.teamStats))
   M.Autocomplete.getInstance($('#institution_name')).updateData(populate_institution_name(data.teamStats))
 
+  const uni_rank_data = gen_uni_rank_td(gen_uni_rank(data.teamStats))
+
+  const uni_rank_table = $('#uni_rank_tb').DataTable({
+    dom: 'p<"chip"i>t',
+    paging: true,
+    data: uni_rank_data,
+    autoWidth: false,
+    pageLength: 70,
+    ordering: false,
+    orderClasses: false,
+    language: {
+      paginate: {
+        next: '<i class="material-icons blue-text">chevron_right</i>',
+        previous: '<i class="material-icons blue-text">chevron_left</i>'
+      }
+    }
+  })
+
+  $('#institution_name_rank').on('keyup change', function () {
+    uni_rank_table.draw()
+  })
   return data.teamStats
 }
