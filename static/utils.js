@@ -119,10 +119,9 @@ async function init() {
 
   const min30 = 1800000
   if (!data || new Date() - new Date(data.lastUpdate) > min30) {
-    data = {}
-    data.teamStats = await getStandings()
-    data.contestMeta = await getContestMeta()
-    data.lastUpdate = new Date().toISOString()
+    const api = "https://icpc-preliminary-dhaka-2023.kurtnettle.workers.dev/"
+    const resp = await fetch(api, { method: 'GET' })
+    data = await resp.json()
     localStorage.setItem('secret_data', JSON.stringify(data))
   }
 
