@@ -22,7 +22,6 @@ async function getStandings () {
       element.rank = rank
       resultsMerged.push(element)
     }
-    rank += 1
   }
   return resultsMerged
 }
