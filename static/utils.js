@@ -102,7 +102,7 @@ function populateTeamName (results) {
 function populateInstitutionName (results) {
   const institutionNames = {}
   for (const result of results) {
-    institutionNames[result.institution.toUpperCase()] = null
+    if (result.institution) institutionNames[result.institution.toUpperCase()] = null
   }
   return institutionNames
 }

@@ -5,7 +5,7 @@ function genTeamList (results) {
     data.push(`<div class="center td_team_rank">${result.rank}</div>`)
     data.push(
       `<span class="td_teamName">${result.fullname
-      }</span></br><span class="td_inst_name">${result.institution.toUpperCase()}</span>`
+      }</span></br><span class="td_inst_name">${result.institution && result.institution.toUpperCase()}</span>`
     )
     data.push(
       `<div class="center">${result.problem_total_points}<br>(${result.total_fine})</div>`
@@ -31,9 +31,9 @@ function filterTeamRankTable (settings, searchData, index, rowData, counter) {
   const teamNameInput = document.getElementById('team_name').value
   const institutionName = document.getElementById('institution_name').value
   const isStrict = document.getElementById('strict_ins_name').checked
-  const minSolve = document.getElementById('min_solv').value
-  const maxSolve = document.getElementById('max_solv').value
-  const totalSolved = $(rowData[2])[0].textContent[0]
+  const minSolve = parseInt(document.getElementById('min_solv').value)
+  const maxSolve = parseInt(document.getElementById('max_solv').value)
+  const totalSolved = parseInt($(rowData[2])[0].textContent[0])
 
   rowData = $(rowData[1])
 
@@ -41,8 +41,8 @@ function filterTeamRankTable (settings, searchData, index, rowData, counter) {
   const insNm = rowData[2].innerText
 
   if (
-    tmNm.indexOf(teamNameInput) > -1 &&
-    (isStrict ? insNm === institutionName : insNm.indexOf(institutionName) > -1) &&
+    (tmNm.indexOf(teamNameInput) > -1) &&
+    ((isStrict && institutionName) ? insNm === institutionName : insNm.indexOf(institutionName) > -1) &&
     totalSolved >= minSolve &&
     totalSolved <= maxSolve
   ) {
