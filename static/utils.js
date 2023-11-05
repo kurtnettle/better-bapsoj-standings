@@ -40,22 +40,26 @@ function getDuration (starts, ends) {
   return `${hrs.toString().padStart(2, 0)}:${min.toString().padStart(2, 0)}`
 }
 
-function getContestStatus (ends) {
-  return parseInt(new Date(ends) - Date.now()) > 0 ? 'Running' : 'Ended'
+function getContestStatus (ends, is_frozen) {
+  if (is_frozen) return 'Frozen'
+  else { return parseInt(new Date(ends) - Date.now()) > 0 ? 'Running' : 'Ended' }
 }
 
 function formatDtString (text) {
-  const dt = new Date(text)
-  return `${dt.getUTCDate()}-${dt.getUTCMonth() + 1}-${dt.getUTCFullYear()} ${dt
-    .getHours()
-    .toString()
-    .padStart(2, '0')}:${dt
-      .getMinutes()
-      .toString()
-      .padStart(2, '0')}:${dt
-        .getSeconds()
-        .toString()
-        .padStart(2, '0')}`
+  const options = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false
+  }
+  const parts = new Intl.DateTimeFormat('default', options).formatToParts(new Date(text))
+  const vals = {}
+  parts.forEach((part) => { vals[part.type] = part.value })
+
+  return `${vals.day}-${vals.month}-${vals.year} ${vals.hour}:${vals.minute}:${vals.second}`
 }
 
 function setContestMeta (json) {
@@ -70,7 +74,7 @@ function setContestMeta (json) {
 
   elem = document.getElementById('contest-duration')
   elem.textContent = `${getDuration(json.ends_at, json.starts_at)} | ${getContestStatus(
-    json.ends_at
+    json.ends_at, json.is_frozen
   )}`
 }
 
@@ -144,6 +148,11 @@ function genUniRankTd (unis) {
   return output
 }
 
+function relativeTimeDifference (lastUpdate) {
+  const elapsed = new Date() - lastUpdate
+  return Math.round(elapsed / (60 * 1000)) + ' minutes ago'
+}
+
 async function init () {
   M.Collapsible.init($('.collapsible'))
   M.Modal.init($('.modal'))
@@ -153,20 +162,32 @@ async function init () {
   })
 
   let data = localStorage.getItem('secret_data')
-  if (data) { data = JSON.parse(data) }
+  let lastUpdate = 0
+  let updateInterval = 30 * 60 * 1000
+  let refresh = true
+  if (data) {
+    data = JSON.parse(data)
+    lastUpdate = new Date(data.lastUpdate)
+    if (data.updateInterval) { updateInterval = data.updateInterval * 60 * 1000 }
 
-  const min30 = 1800000
-  if (!data || new Date() - new Date(data.lastUpdate) > min30) {
+    refresh = (new Date() - lastUpdate > updateInterval)
+  }
+
+  if (refresh) {
     const api = 'https://icpc-preliminary-dhaka-2023.kurtnettle.workers.dev/'
     const resp = await fetch(api, { method: 'GET' })
     data = await resp.json()
+    lastUpdate = new Date(data.lastUpdate)
+    updateInterval = (data.updateInterval != null) ? (data.updateInterval) : 30
     localStorage.setItem('secret_data', JSON.stringify(data))
   }
+
+  $('#update_interval').text(relativeTimeDifference(lastUpdate))
 
   setContestMeta(data.contestMeta)
   setProblemSetMeta(data.contestMeta.problem_set)
   document.getElementById('last-update-span').textContent = formatDtString(
-    data.lastUpdate
+    data.contestMeta.updated_at
   )
 
   M.Autocomplete.getInstance($('#team_name')).updateData(populateTeamName(data.teamStats))
