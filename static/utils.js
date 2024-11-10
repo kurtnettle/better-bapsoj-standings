@@ -174,7 +174,7 @@ async function init () {
   }
 
   if (refresh) {
-    const api = 'https://icpc-preliminary-dhaka-2023.kurtnettle.workers.dev/'
+    const api = 'https://icpc-preliminary-dhaka-2024.kurtnettle.workers.dev/'
     const resp = await fetch(api, { method: 'GET' })
     data = await resp.json()
     lastUpdate = new Date(data.lastUpdate)
